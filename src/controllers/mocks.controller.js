@@ -15,6 +15,25 @@ const generateMockUsers = (numUsers) => {
     return users;
 };
 
+const generateMockPets = (numPets) => {
+    const pets = Array.from({length: numPets}, ()=> ({
+        name: faker.animal.cat(),
+        specie: faker.animal.type(),
+        birthDate: faker.date.past(),
+    }));
+    return pets;
+}
+
+const generateFaker = (req, res) => {
+    const mockFaker = Array.from({ length: 10 }, () =>({
+        name: faker.company.name(),
+        business: faker.company.catchPhrase(),
+        start_date: faker.date.past()
+    }))
+
+    res.send({status: 'success', payload: mockFaker })
+}
+
 const mockingPets = (req, res) => {
     const mockPets = Array.from({ length: 10 }, () => ({
         name: faker.animal.cat(),
@@ -36,11 +55,7 @@ const generateData = async (req, res) => {
     }
 
     const mockUsers = generateMockUsers(users);
-    const mockPets = Array.from({ length: pets }, () => ({
-        name: faker.animal.cat(),
-        specie: faker.animal.type(),
-        birthDate: faker.date.past(),
-    }));
+    const mockPets = generateMockPets(pets);
 
     try {
         await usersService.createMany(mockUsers); 
@@ -55,4 +70,5 @@ export default {
     mockingPets,
     mockingUsers,
     generateData,
+    generateFaker
 };
