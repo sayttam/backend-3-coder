@@ -9,7 +9,7 @@ const generateMockUsers = (numUsers) => {
         last_name: faker.person.lastName(),
         email: faker.internet.email(),
         password: bcrypt.hashSync('coder123', 10),
-        role: 'user',
+        role: faker.helpers.arrayElement(['admin', 'user']),
         pets: [],
     }));
     return users;
@@ -28,9 +28,9 @@ const generateFaker = (req, res) => {
     const mockFaker = Array.from({ length: 10 }, () =>({
         name: faker.company.name(),
         business: faker.company.catchPhrase(),
-        start_date: faker.date.past()
+        start_date: faker.date.past(),
+        favorite_color: faker.color.human()
     }))
-
     res.send({status: 'success', payload: mockFaker })
 }
 
