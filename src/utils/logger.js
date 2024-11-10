@@ -1,9 +1,9 @@
-import winston from 'winston';
+import winston, { format } from 'winston';
 
 const logger = winston.createLogger({
     level: 'debug',
     format: winston.format.combine(
-        winston.format.timestamp(),
+        winston.format.timestamp({format: "YYYY-MM-DD HH:mm:ss"}),
         winston.format.printf(({ timestamp, level, message }) => {
             return `${timestamp} [${level.toUpperCase()}]: ${message}`;
         })

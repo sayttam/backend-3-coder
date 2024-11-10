@@ -62,30 +62,6 @@ router.get('/mockingusers', mocksController.mockingUsers);
 
 /**
  * @swagger
- * /api/mocks/generateData:
- *   post:
- *     summary: Generar datos simulados
- *     tags: [Mocks]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               amount:
- *                 type: integer
- *                 description: La cantidad de datos a generar.
- *     responses:
- *       201:
- *         description: Datos generados con éxito.
- *       400:
- *         description: Solicitud incorrecta.
- */
-router.post('/generateData', mocksController.generateData);
-
-/**
- * @swagger
  * /api/mocks/mockingfaker:
  *   get:
  *     summary: Obtener datos simulados usando Faker
@@ -111,5 +87,29 @@ router.post('/generateData', mocksController.generateData);
  *                     description: El correo electrónico generado.
  */
 router.get('/mockingfaker', mocksController.generateFaker);
+
+/**
+ * @swagger
+ * /api/mocks/generateData:
+ *   post:
+ *     summary: Generar datos simulados
+ *     tags: [Mocks]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               amount:
+ *                 type: integer
+ *                 description: La cantidad de datos a generar.
+ *     responses:
+ *       201:
+ *         description: Datos generados con éxito.
+ *       400:
+ *         description: Solicitud incorrecta.
+ */
+router.post('/generateData/:cu/:cp', mocksController.generateData);
 
 export default router;

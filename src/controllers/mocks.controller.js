@@ -1,16 +1,18 @@
-import bcrypt from 'bcrypt';
-import { faker } from '@faker-js/faker';
-//import { usersService } from '../services/index.js';
-//import { petsService } from '../services/index.js';
+import bcrypt from 'bcryptjs';
+import { faker, ne } from '@faker-js/faker';
 import UserDAO from '../dao/Users.dao.js';
 import PetDAO from '../dao/Pets.dao.js';
+import { customError } from '../errors/customError.js';
+import logger from '../utils/logger.js';
 
-const userDao = new UserDAO;
-const petDao = new PetDAO;
-
+const userDao = new UserDAO();
+const petDao = new PetDAO();
 
 const generateMockUsers = (numUsers) => {
-    const users = Array.from({ length: numUsers }, () => ({
+    if (typeof numUsers !== 'number' || numUsers <= 0) {
+        throw customError.badRequestError("El número de usuarios debe ser un número positivo");
+    }
+    return Array.from({ length: numUsers }, () => ({
         first_name: faker.person.firstName(),
         last_name: faker.person.lastName(),
         email: faker.internet.email(),
@@ -18,19 +20,20 @@ const generateMockUsers = (numUsers) => {
         role: faker.helpers.arrayElement(['admin', 'user']),
         pets: [],
     }));
-    return users;
 };
 
 const generateMockPets = (numPets) => {
-    const pets = Array.from({ length: numPets }, () => ({
+    if (typeof numPets !== 'number' || numPets <= 0) {
+        throw customError.badRequestError("El número de mascotas debe ser un número positivo");
+    }
+    return Array.from({ length: numPets }, () => ({
         name: faker.animal.cat(),
         specie: faker.animal.type(),
         birthDate: faker.date.past(),
     }));
-    return pets;
 };
 
-const generateFaker = (req, res) => {
+const generateFaker = (req, res, next) => {
     try {
         const mockFaker = Array.from({ length: 10 }, () => ({
             name: faker.company.name(),
@@ -40,47 +43,46 @@ const generateFaker = (req, res) => {
         }));
         res.send({ status: 'success', payload: mockFaker });
     } catch (error) {
-        res.status(500).send({ status: 'error', message: 'Error al generar mock falso', error: error.message });
+        logger.error(`Error al generar mock falso: ${error.message}`);
+        next(error);
     }
 };
 
-const mockingPets = (req, res) => {
+const mockingPets = (req, res, next) => {
     try {
-        const mockPets = Array.from({ length: 10 }, () => ({
-            name: faker.animal.cat(),
-            specie: faker.animal.type(),
-            birthDate: faker.date.past(),
-        }));
+        const mockPets = generateMockPets(10);
         res.send({ status: 'success', payload: mockPets });
     } catch (error) {
-        res.status(500).send({ status: 'error', message: 'Error al generar mock de mascotas', error: error.message });
+        next(error);
     }
 };
 
-const mockingUsers = (req, res) => {
+const mockingUsers = (req, res, next) => {
     try {
         const mockUsers = generateMockUsers(50);
         res.send({ status: 'success', payload: mockUsers });
     } catch (error) {
-        res.status(500).send({ status: 'error', message: 'Error al generar mock de usuarios', error: error.message });
+        next(error);
     }
 };
 
-const generateData = async (req, res) => {
-    const { users, pets } = req.body;
-    if (!users || !pets) {
-        return res.status(400).send({ status: 'error', message: 'Faltan parámetros numéricos para users y pets' });
+const generateData = async (req, res, next) => {
+    const { cu, cp } = req.params;
+
+    if (typeof cu !== 'number' || cu <= 0 || typeof cp !== 'number' || cp <= 0) {
+        logger.warn("Faltan parámetros numéricos válidos para users y pets");
+        throw customError.badRequestError("Faltan parámetros numéricos válidos para users y pets");
     }
 
-    const mockUsers = generateMockUsers(users);
-    const mockPets = generateMockPets(pets);
-
     try {
+        const mockUsers = generateMockUsers(cu);
+        const mockPets = generateMockPets(cp);
+
         await userDao.insertMany(mockUsers);
         await petDao.insertMany(mockPets);
         res.send({ status: 'success', message: `${users} usuarios y ${pets} mascotas insertados en la base de datos` });
     } catch (error) {
-        res.status(500).send({ status: 'error', message: 'Error al insertar en la base de datos', error: error.message });
+        next(error);
     }
 };
 

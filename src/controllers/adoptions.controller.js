@@ -1,52 +1,66 @@
-//import { adoptionsService, petsService, usersService } from "../services/index.js";
-import AdoptionDAO from '../dao/Adoption.dao.js'
-import UserDAO from '../dao/Users.dao.js'
-import PetDAO from '../dao/Pets.dao.js'
+import AdoptionDAO from '../dao/Adoption.dao.js';
+import UserDAO from '../dao/Users.dao.js';
+import PetDAO from '../dao/Pets.dao.js';
+import { customError } from '../errors/customError.js';
+import logger from '../utils/logger.js';
 
-const adoptionDao = new AdoptionDAO
-const userDao = new UserDAO
-const petsDao = new PetDAO
+const adoptionDao = new AdoptionDAO();
+const userDao = new UserDAO();
+const petDao = new PetDAO();
 
-const getAllAdoptions = async (req, res) => {
+const getAllAdoptions = async (req, res, next) => {
     try {
         const result = await adoptionDao.get({});
         res.send({ status: "success", payload: result });
     } catch (error) {
-        res.status(500).send({ status: "error", error: "Error al obtener adopciones" });
+        logger.error(`Error al obtener adopciones: ${error.message}`);
+        next(error);
     }
 };
 
-const getAdoption = async (req, res) => {
+const getAdoption = async (req, res, next) => {
     try {
         const adoptionId = req.params.aid;
         const adoption = await adoptionDao.getBy({ _id: adoptionId });
-        if (!adoption) return res.status(404).send({ status: "error", error: "Adopcion no encontrada" });
+        if (!adoption) {
+            logger.warn(`Adopción no encontrada: ${adoptionId}`);
+            throw customError.notFoundError("Adopción no encontrada");
+        }
+
         res.send({ status: "success", payload: adoption });
     } catch (error) {
-        res.status(500).send({ status: "error", error: "Error al obtener adopcion" });
+        next(error);
     }
 };
 
-const createAdoption = async (req, res) => {
+const createAdoption = async (req, res, next) => {
     try {
         const { uid, pid } = req.params;
-        const user = await userDao.getBy({_id: uid});
-        if (!user) return res.status(404).send({ status: "error", error: "Usuario no encontrado" });
+        const user = await userDao.getBy({ _id: uid });
+        if (!user) {
+            logger.warn(`Usuario no encontrado: ${uid}`);
+            throw customError.notFoundError("Usuario no encontrado");
+        }
 
-        const pet = await petsDao.getBy({_id: pid});
-        if (!pet) return res.status(404).send({ status: "error", error: "Mascota no encontrada" });
+        const pet = await petDao.getBy({ _id: pid });
+        if (!pet) {
+            logger.warn(`Mascota no encontrada: ${pid}`);
+            throw customError.notFoundError("Mascota no encontrada");
+        }
 
-        if (pet.adopted) return res.status(400).send({ status: "error", error: "La mascota ya ha sido adoptada" });
+        if (pet.adopted) {
+            logger.warn("La mascota ya ha sido adoptada");
+            throw customError.badRequestError("La mascota ya ha sido adoptada");
+        }
 
         user.pets.push(pet._id);
         await userDao.update(user._id, { pets: user.pets });
-        await petsDao.update(pet._id, { adopted: true, owner: user._id });
+        await petDao.update(pet._id, { adopted: true, owner: user._id });
         await adoptionDao.save({ owner: user._id, pet: pet._id });
 
-        res.send({ status: "success", message: "Mascota adoptada!" });
+        res.status(201).send({ status: "success", message: "Mascota adoptada!" });
     } catch (error) {
-        console.log(error)
-        res.status(500).send({ status: "error", error: "Error al crear la adopcion" });
+        next(error);
     }
 };
 
