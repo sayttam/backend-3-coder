@@ -695,3 +695,10 @@
 2024-11-11 00:39:07 [INFO]: GET /api-docs/swagger-ui-init.js
 2024-11-11 00:39:07 [INFO]: GET /api-docs/swagger-ui-bundle.js
 2024-11-11 00:39:07 [INFO]: GET /api-docs/favicon-32x32.png
+2024-11-11 00:40:18 [INFO]: Listening on 8080
+2024-11-11 00:41:37 [INFO]: GET /api-docs/
+2024-11-11 00:41:37 [INFO]: GET /api-docs/swagger-ui.css
+2024-11-11 00:41:37 [INFO]: GET /api-docs/swagger-ui-standalone-preset.js
+2024-11-11 00:41:37 [INFO]: GET /api-docs/swagger-ui-init.js
+2024-11-11 00:41:37 [INFO]: GET /api-docs/swagger-ui-bundle.js
+2024-11-11 00:41:37 [INFO]: GET /api-docs/favicon-32x32.png
