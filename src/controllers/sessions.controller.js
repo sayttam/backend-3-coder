@@ -30,6 +30,7 @@ const register = async (req, res, next) => {
         logger.info(`Usuario registrado con ID: ${result._id}`);
         res.send({ status: "success", payload: result._id });
     } catch (error) {
+        logger.error(`Error al registrar usuario: ${error.message}`);
         error.path = "[POST] api/sessions/register"
         next(error);
     }
@@ -53,10 +54,11 @@ const login = async (req, res, next) => {
             throw customError.unauthorizedError("Contraseña incorrecta");
         }
         const userDto = UserDTO.getUserTokenFrom(user);
-        const token = jwt.sign(userDto, 'tokenSecretJWT', { expiresIn: "1h" });
+        const token = jwt.sign(userDto, process.env.JWT_SECRET, { expiresIn: "1h" });
         logger.info(`Usuario ${email} ha iniciado sesión`);
         res.cookie('coderCookie', token, { maxAge: 3600000 }).send({ status: "success", mensaje: "Sesión iniciada" });
     } catch (error) {
+        logger.error(`Error de login: ${error.message}`);
         error.path = "[POST] api/sessions/login"
         next(error)
     }
@@ -75,6 +77,7 @@ const current = async (req, res, next) => {
             return res.send({ status: "success", payload: user });
         }
     } catch (error) {
+        logger.error(`Error al obtener usuario logueado: ${error.message}`);
         error.path = "[GET] api/sessions/current"
         next(error);
     }
@@ -101,6 +104,7 @@ const unprotectedLogin = async (req, res, next) => {
         const token = jwt.sign(user, 'tokenSecretJWT', { expiresIn: "1h" });
         res.cookie('unprotectedCookie', token, { maxAge: 3600000 }).send({ status: "success", mensaje: "Sesión no protegida iniciada" });
     } catch (error) {
+        logger.error(`Error en login en ruta desprotegida: ${error.message}`);
         error.path = "[POST] api/sessions/unprotectedLogin"
         next(error);
     }
@@ -119,6 +123,7 @@ const unprotectedCurrent = async (req, res, next) => {
             return res.send({ status: "success", payload: user });
         }
     } catch (error) {
+        logger.error(`Error al obtener usuario en ruta desprotegida: ${error.message}`);
         error.path = "[GET] api/sessions/unprotectedCurrent"
         next(error);
     }

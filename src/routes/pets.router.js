@@ -1,4 +1,3 @@
-// routes/pets.router.js
 import { Router } from 'express';
 import petsController from '../controllers/pets.controller.js';
 import uploader from '../utils/uploader.js';
@@ -27,9 +26,12 @@ const router = Router();
  *                   name:
  *                     type: string
  *                     description: El nombre de la mascota.
- *                   type:
+ *                   specie:
  *                     type: string
- *                     description: El tipo de mascota.
+ *                     description: La especie de la mascota.
+ *                   birthDate:
+ *                     type: string
+ *                     description: La fecha de nacimiento de la mascota.
  */
 router.get('/', petsController.getAllPets);
 
@@ -49,9 +51,12 @@ router.get('/', petsController.getAllPets);
  *               name:
  *                 type: string
  *                 description: El nombre de la mascota.
- *               type:
+ *               specie:
  *                 type: string
- *                 description: El tipo de mascota.
+ *                 description: La especie de la mascota.
+ *               birthDate:
+ *                 type: string
+ *                 description: La fecha de nacimiento de la mascota (formato YYYY-MM-DD).
  *     responses:
  *       201:
  *         description: Mascota creada con éxito.
@@ -76,9 +81,12 @@ router.post('/', petsController.createPet);
  *               name:
  *                 type: string
  *                 description: El nombre de la mascota.
- *               type:
+ *               specie:
  *                 type: string
- *                 description: El tipo de mascota.
+ *                 description: La especie de la mascota.
+ *               birthDate:
+ *                 type: string
+ *                 description: La fecha de nacimiento de la mascota (formato YYYY-MM-DD).
  *               image:
  *                 type: string
  *                 format: binary
@@ -90,6 +98,27 @@ router.post('/', petsController.createPet);
  *         description: Solicitud incorrecta.
  */
 router.post('/withimage', uploader.single('image'), petsController.createPetWithImage);
+
+/**
+ * @swagger
+ * /api/pets/{pid}:
+ *   get:
+ *     summary: Obtener una mascota por su ID
+ *     tags: [Mascotas]
+ *     parameters:
+ *       - in: path
+ *         name: pid
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: El ID de la mascota
+ *     responses:
+ *       200:
+ *         description: Datos de la mascota obtenidos exitosamente.
+ *       404:
+ *         description: Mascota no encontrada.
+ */
+router.get('/:pid', petsController.getPet);
 
 /**
  * @swagger
@@ -113,10 +142,13 @@ router.post('/withimage', uploader.single('image'), petsController.createPetWith
  *             properties:
  *               name:
  *                 type: string
- *                 description: El nombre de la mascota.
- *               type:
+ *                 description: El nombre actualizado de la mascota.
+ *               specie:
  *                 type: string
- *                 description: El tipo de mascota.
+ *                 description: La especie de la mascota.
+ *               birthDate:
+ *                 type: string
+ *                 description: La fecha de nacimiento de la mascota (formato YYYY-MM-DD).
  *     responses:
  *       200:
  *         description: La mascota fue actualizada con éxito.

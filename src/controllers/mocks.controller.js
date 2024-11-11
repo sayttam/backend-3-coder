@@ -69,20 +69,21 @@ const mockingUsers = (req, res, next) => {
 };
 
 const generateData = async (req, res, next) => {
-    const { cu, cp } = req.params;
-
-    if (typeof cu !== 'number' || cu <= 0 || typeof cp !== 'number' || cp <= 0) {
+    const { cu, cm } = req.params;
+    const cantUsuarios = parseInt(cu);
+    const cantMascotas = parseInt(cm);
+    if (typeof cantUsuarios !== 'number' || cantUsuarios <= 0 || typeof cantMascotas !== 'number' || cantMascotas <= 0) {
         logger.warn("Faltan parámetros numéricos válidos para users y pets");
         throw customError.badRequestError("Faltan parámetros numéricos válidos para users y pets");
     }
 
     try {
-        const mockUsers = generateMockUsers(cu);
-        const mockPets = generateMockPets(cp);
+        const mockUsers = generateMockUsers(cantUsuarios);
+        const mockPets = generateMockPets(cantMascotas);
 
         await userDao.insertMany(mockUsers);
         await petDao.insertMany(mockPets);
-        res.send({ status: 'success', message: `${users} usuarios y ${pets} mascotas insertados en la base de datos` });
+        res.send({ status: 'success', message: `${cantUsuarios} usuarios y ${cantMascotas} mascotas insertados en la base de datos` });
     } catch (error) {
         logger.error(`Error al generar datos de usuarios y mascotas: ${error.message}`);
         next(error);

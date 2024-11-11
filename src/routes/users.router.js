@@ -81,9 +81,18 @@ router.get('/:uid', usersController.getUser);
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               first_name:
  *                 type: string
  *                 description: El nombre del usuario.
+ *               last_name:
+ *                 type: string
+ *                 description: El nombre del usuario.
+ *               email:
+ *                 type: string
+ *                 description: El email del usuario.
+ *               password:
+ *                 type: string
+ *                 description: El password del usuario.
  *     responses:
  *       200:
  *         description: El usuario fue actualizado exitosamente.

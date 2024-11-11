@@ -1,4 +1,3 @@
-// routes/mocks.router.js
 import { Router } from 'express';
 import mocksController from '../controllers/mocks.controller.js';
 
@@ -20,15 +19,16 @@ const router = Router();
  *               items:
  *                 type: object
  *                 properties:
- *                   id:
- *                     type: string
- *                     description: El ID simulado de la mascota.
  *                   name:
  *                     type: string
  *                     description: El nombre simulado de la mascota.
- *                   type:
+ *                   specie:
  *                     type: string
- *                     description: El tipo de mascota.
+ *                     description: La especie de la mascota.
+ *                   birthDate:
+ *                     type: string
+ *                     format: date
+ *                     description: La fecha de nacimiento simulada de la mascota.
  */
 router.get('/mockingpets', mocksController.mockingPets);
 
@@ -48,15 +48,18 @@ router.get('/mockingpets', mocksController.mockingPets);
  *               items:
  *                 type: object
  *                 properties:
- *                   id:
- *                     type: string
- *                     description: El ID simulado del usuario.
- *                   name:
+ *                   first_name:
  *                     type: string
  *                     description: El nombre simulado del usuario.
+ *                   last_name:
+ *                     type: string
+ *                     description: El apellido simulado del usuario.
  *                   email:
  *                     type: string
  *                     description: El correo electrónico simulado del usuario.
+ *                   role:
+ *                     type: string
+ *                     description: El rol simulado del usuario (admin o user).
  */
 router.get('/mockingusers', mocksController.mockingUsers);
 
@@ -76,40 +79,64 @@ router.get('/mockingusers', mocksController.mockingUsers);
  *               items:
  *                 type: object
  *                 properties:
- *                   id:
- *                     type: string
- *                     description: El ID generado.
  *                   name:
  *                     type: string
- *                     description: El nombre generado.
- *                   email:
+ *                     description: El nombre simulado de la empresa.
+ *                   business:
  *                     type: string
- *                     description: El correo electrónico generado.
+ *                     description: El eslogan de la empresa.
+ *                   start_date:
+ *                     type: string
+ *                     format: date
+ *                     description: La fecha de inicio simulada de la empresa.
+ *                   favorite_color:
+ *                     type: string
+ *                     description: El color favorito simulado.
  */
 router.get('/mockingfaker', mocksController.generateFaker);
 
 /**
  * @swagger
- * /api/mocks/generateData:
+ * /api/mocks/generateData/{cu}/{cp}:
  *   post:
- *     summary: Generar datos simulados
+ *     summary: Generar datos simulados de usuarios y mascotas
  *     tags: [Mocks]
+ *     parameters:
+ *       - in: path
+ *         name: cu
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: La cantidad de usuarios simulados a generar.
+ *       - in: path
+ *         name: cp
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: La cantidad de mascotas simuladas a generar.
  *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               amount:
- *                 type: integer
- *                 description: La cantidad de datos a generar.
+ *       required: false
  *     responses:
  *       201:
  *         description: Datos generados con éxito.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   description: El estado de la solicitud.
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   description: Mensaje indicando el número de usuarios y mascotas generados.
+ *                   example: "10 usuarios y 15 mascotas insertados en la base de datos"
  *       400:
  *         description: Solicitud incorrecta.
  */
-router.post('/generateData/:cu/:cp', mocksController.generateData);
+router.post('/generateData/:cu/:cm', mocksController.generateData);
 
 export default router;

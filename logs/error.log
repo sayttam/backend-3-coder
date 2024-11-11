@@ -54,3 +54,6 @@
 2024-11-10 12:23:40 [ERROR]: Mascota no encontrada
 2024-11-10 12:23:40 [ERROR]: La mascota ya ha sido adoptada
 2024-11-10 12:23:40 [ERROR]: No se pudo eliminar la mascota
+2024-11-11 00:32:16 [ERROR]: Error al generar datos de usuarios y mascotas: users is not defined
+2024-11-11 00:32:16 [ERROR]: users is not defined
+2024-11-11 00:33:01 [ERROR]: Error al generar datos de usuarios y mascotas: users is not defined
