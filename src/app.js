@@ -2,29 +2,47 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv'
 import { errorHandle } from './errors/errorHandler.js';
+import cluster from 'cluster';
+import os from 'os';
 import logger from './utils/logger.js';
 import swaggerUiExpress from 'swagger-ui-express'
 import { specs } from './config/swagger.config.js'
 import indexRouter from './routes/index.router.js'
 import { dbconnection } from './config/db.config.js';
 
-dotenv.config();
+const numCPUs = os.cpus().length;
 
-const app = express();
-dbconnection();
+if (cluster.isPrimary) {
+    console.log(`Proceso primario ${process.pid} corriendo`);
 
-app.use(express.json());
-app.use(cookieParser());
+    for (let i = 0; i < numCPUs; i++) {
+        cluster.fork();
+    }
 
-app.use((req, res, next) => {
-    logger.info(`${req.method} ${req.url}`);
-    next();
-});
+    cluster.on('exit', (worker) => {
+        console.log(`Worker ${worker.process.pid} murió. Iniciando un nuevo worker...`);
+        cluster.fork();
+    });
 
-app.use('/api-docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+} else {
+    dotenv.config();
 
-app.use('/api', indexRouter);
+    const app = express();
+    dbconnection();
 
-app.use(errorHandle);
+    app.use(express.json());
+    app.use(cookieParser());
 
-app.listen(process.env.PORT, ()=> logger.info(`Listening on ${process.env.PORT}`));
+    app.use((req, res, next) => {
+        logger.info(`${req.method} ${req.url}`);
+        next();
+    });
+
+    app.use('/api-docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+
+    app.use('/api', indexRouter);
+
+    app.use(errorHandle);
+
+    app.listen(process.env.PORT, () => logger.info(`Listening on ${process.env.PORT}`));
+}
