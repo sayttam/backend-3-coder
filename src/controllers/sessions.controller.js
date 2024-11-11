@@ -30,7 +30,7 @@ const register = async (req, res, next) => {
         logger.info(`Usuario registrado con ID: ${result._id}`);
         res.send({ status: "success", payload: result._id });
     } catch (error) {
-         error.path = "[POST] api/sessions/register"
+        error.path = "[POST] api/sessions/register"
         next(error);
     }
 };
@@ -57,7 +57,7 @@ const login = async (req, res, next) => {
         logger.info(`Usuario ${email} ha iniciado sesión`);
         res.cookie('coderCookie', token, { maxAge: 3600000 }).send({ status: "success", mensaje: "Sesión iniciada" });
     } catch (error) {
-         error.path = "[POST] api/sessions/login"
+        error.path = "[POST] api/sessions/login"
         next(error)
     }
 };
@@ -75,7 +75,7 @@ const current = async (req, res, next) => {
             return res.send({ status: "success", payload: user });
         }
     } catch (error) {
-         error.path = "[GET] api/sessions/current"
+        error.path = "[GET] api/sessions/current"
         next(error);
     }
 };
@@ -101,7 +101,7 @@ const unprotectedLogin = async (req, res, next) => {
         const token = jwt.sign(user, 'tokenSecretJWT', { expiresIn: "1h" });
         res.cookie('unprotectedCookie', token, { maxAge: 3600000 }).send({ status: "success", mensaje: "Sesión no protegida iniciada" });
     } catch (error) {
-         error.path = "[POST] api/sessions/unprotectedLogin"
+        error.path = "[POST] api/sessions/unprotectedLogin"
         next(error);
     }
 };
@@ -119,7 +119,7 @@ const unprotectedCurrent = async (req, res, next) => {
             return res.send({ status: "success", payload: user });
         }
     } catch (error) {
-                error.path = "[GET] api/sessions/unprotectedCurrent"
+        error.path = "[GET] api/sessions/unprotectedCurrent"
         next(error);
     }
 };

@@ -492,3 +492,17 @@
 2024-11-10 12:23:40 [INFO]: DELETE /api/pets/670c90848f479ad3a1218a15
 2024-11-10 12:23:40 [WARN]: No se pudo eliminar la mascota
 2024-11-10 12:23:40 [ERROR]: No se pudo eliminar la mascota
+2024-11-10 13:17:05 [INFO]: Listening on 8080
+2024-11-10 13:18:31 [INFO]: Listening on 8080
+2024-11-10 13:24:22 [INFO]: GET /api-docs
+2024-11-10 13:24:22 [INFO]: GET /api-docs/
+2024-11-10 13:24:22 [INFO]: GET /api-docs/swagger-ui.css
+2024-11-10 13:24:22 [INFO]: GET /api-docs/swagger-ui-bundle.js
+2024-11-10 13:24:22 [INFO]: GET /api-docs/swagger-ui-standalone-preset.js
+2024-11-10 13:24:22 [INFO]: GET /api-docs/swagger-ui-init.js
+2024-11-10 13:37:53 [INFO]: Listening on 8080
+2024-11-10 13:38:36 [INFO]: Listening on 8080
+2024-11-10 13:39:02 [INFO]: Listening on 8080
+2024-11-10 13:40:08 [INFO]: Listening on 8080
+2024-11-10 13:40:49 [INFO]: Listening on 8080
+2024-11-10 13:41:44 [INFO]: Listening on 8080

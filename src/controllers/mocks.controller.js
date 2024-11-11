@@ -53,6 +53,7 @@ const mockingPets = (req, res, next) => {
         const mockPets = generateMockPets(10);
         res.send({ status: 'success', payload: mockPets });
     } catch (error) {
+        logger.error(`Error al generar mock de mascotas: ${error.message}`);
         next(error);
     }
 };
@@ -62,6 +63,7 @@ const mockingUsers = (req, res, next) => {
         const mockUsers = generateMockUsers(50);
         res.send({ status: 'success', payload: mockUsers });
     } catch (error) {
+        logger.error(`Error al generar mock de usuarios: ${error.message}`);
         next(error);
     }
 };
@@ -82,6 +84,7 @@ const generateData = async (req, res, next) => {
         await petDao.insertMany(mockPets);
         res.send({ status: 'success', message: `${users} usuarios y ${pets} mascotas insertados en la base de datos` });
     } catch (error) {
+        logger.error(`Error al generar datos de usuarios y mascotas: ${error.message}`);
         next(error);
     }
 };

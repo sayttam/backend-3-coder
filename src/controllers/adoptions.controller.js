@@ -14,6 +14,7 @@ const getAllAdoptions = async (req, res, next) => {
         res.send({ status: "success", payload: result });
     } catch (error) {
         logger.error(`Error al obtener adopciones: ${error.message}`);
+        error.path = '[GET] api/adoptions'
         next(error);
     }
 };
@@ -29,6 +30,8 @@ const getAdoption = async (req, res, next) => {
 
         res.send({ status: "success", payload: adoption });
     } catch (error) {
+        logger.error(`Error al obtener adopcion: ${error.message}`);
+        error.path = '[GET] api/adoptions/:aid'
         next(error);
     }
 };
@@ -60,6 +63,8 @@ const createAdoption = async (req, res, next) => {
 
         res.status(201).send({ status: "success", message: "Mascota adoptada!" });
     } catch (error) {
+        logger.error(`Error al crear adopcion: ${error.message}`);
+        error.path = '[POST] api/adoptions'
         next(error);
     }
 };

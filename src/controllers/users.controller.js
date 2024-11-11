@@ -14,6 +14,7 @@ const getAllUsers = async (req, res, next) => {
         logger.info("Usuarios obtenidos correctamente")
         res.send({ status: "success", payload: users });
     } catch (error) {
+        logger.error(`Error al obtener usuarios: ${error.message}`);
         error.path = "[GET] api/users"
         next(error);
     }
@@ -30,7 +31,8 @@ const getUser = async (req, res, next) => {
         logger.info(`Usuario obtenido: ${userId}`);
         res.send({ status: "success", payload: user });
     } catch (error) {
-         error.path = "[GET] api/users/:uid"
+        logger.error(`Error al obtener usuario: ${error.message}`);
+        error.path = "[GET] api/users/:uid"
         next(error);
     }
 };
@@ -48,7 +50,8 @@ const updateUser = async (req, res, next) => {
         await userDao.update(userId, updateBody);
         res.send({ status: "success", mensaje: "Usuario actualizado" });
     } catch (error) {
-         error.path = "[PUT] api/users/:uid"
+        logger.error(`Error al actualizar usuario: ${error.message}`);
+        error.path = "[PUT] api/users/:uid"
         next(error);
     }
 };
@@ -65,6 +68,7 @@ const deleteUser = async (req, res, next) => {
         logger.info(`Usuario eliminado: ${userId}`);
         res.send({ status: "success", mensaje: "Usuario eliminado" });
     } catch (error) {
+        logger.error(`Error al eliminar usuario: ${error.message}`);
         error.path = "[DELETE] api/users/:uid"
         next(error);
     }

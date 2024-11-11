@@ -11,6 +11,19 @@ const getAllPets = async (req, res, next) => {
         const pets = await petDao.get({});
         res.send({ status: "success", payload: pets });
     } catch (error) {
+        logger.error(`Error al obtener mascotas: ${error.message}`);
+        error.path = "[GET] api/pets"
+        next(error);
+    }
+};
+
+const getPet = async (req, res, next) => {
+    try {
+        const pid = req.params;
+        const pets = await petDao.getBy({ _id: pid })
+        res.send({ status: "success", payload: pets });
+    } catch (error) {
+        logger.error(`Error al obtener mascota: ${error.message}`);
         error.path = "[GET] api/pets"
         next(error);
     }
@@ -28,6 +41,7 @@ const createPet = async (req, res, next) => {
         logger.info(`Mascota creada: ${result}`);
         res.send({ status: "success", payload: result });
     } catch (error) {
+        logger.error(`Error al crear mascota: ${error.message}`);
         error.path = "[POST] api/pets"
         next(error);
     }
@@ -44,6 +58,7 @@ const updatePet = async (req, res, next) => {
         }
         res.send({ status: "success", mensaje: "Mascota actualizada" });
     } catch (error) {
+        logger.error(`Error al actualizar mascota: ${error.message}`);
         error.path = "[PUT] api/pets"
         next(error);
     }
@@ -59,6 +74,7 @@ const deletePet = async (req, res, next) => {
         }
         res.send({ status: "success", mensaje: "Mascota eliminada" });
     } catch (error) {
+        logger.error(`Error al eliminar mascota: ${error.message}`);
         error.path = "[DELETE] api/pets"
         next(error);
     }
@@ -81,12 +97,15 @@ const createPetWithImage = async (req, res, next) => {
         const result = await petDao.save(pet);
         res.send({ status: "success", payload: result });
     } catch (error) {
+        logger.error(`Error al crear mascota con imagen: ${error.message}`);
+        error.path = "[POST] api/pets/withimage"
         next(error);
     }
 };
 
 export default {
     getAllPets,
+    getPet,
     createPet,
     updatePet,
     deletePet,
