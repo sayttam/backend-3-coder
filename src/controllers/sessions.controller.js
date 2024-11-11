@@ -67,7 +67,7 @@ const login = async (req, res, next) => {
 const current = async (req, res, next) => {
     try {
         const cookie = req.cookies['coderCookie'];
-        const user = jwt.verify(cookie, 'tokenSecretJWT');
+        const user = jwt.verify(cookie, process.env.JWT_SECRET);
         if (!user) {
             logger.info('No hay un usuario logueado');
             throw customError.notFoundError('No hay un usuario logueado')
@@ -101,7 +101,7 @@ const unprotectedLogin = async (req, res, next) => {
             throw customError.unauthorizedError("Contraseña incorrecta");
         }
         logger.info(`Usuario ${email} ha iniciado sesión no protegida`);
-        const token = jwt.sign(user, 'tokenSecretJWT', { expiresIn: "1h" });
+        const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "1h" });
         res.cookie('unprotectedCookie', token, { maxAge: 3600000 }).send({ status: "success", mensaje: "Sesión no protegida iniciada" });
     } catch (error) {
         logger.error(`Error en login en ruta desprotegida: ${error.message}`);
@@ -113,7 +113,7 @@ const unprotectedLogin = async (req, res, next) => {
 const unprotectedCurrent = async (req, res, next) => {
     try {
         const cookie = req.cookies['unprotectedCookie'];
-        const user = jwt.verify(cookie, 'tokenSecretJWT');
+        const user = jwt.verify(cookie, process.env.JWT_SECRET);
         if (!user) {
             logger.info('No hay un usuario logueado');
             throw customError.notFoundError('No hay un usuario logueado')
